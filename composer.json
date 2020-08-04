@@ -1,0 +1,23 @@
+{
+    "name": "basilicom/json-schema-request-validator-bundle",
+    "description": "Easily validate Symfony request bodies via JSON schema and automatically reject invalid requests",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Marcel Eichhorn",
+            "email": "marcel.eichhorn@basilicom.de"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "ext-json": "*",
+        "symfony/symfony": "^3.4.26 || ^4.1.12",
+        "justinrainbow/json-schema": "^5.2"
+    },
+    "autoload":  {
+        "psr-4": {
+            "Basilicom\\JsonSchemaRequestValidator\\": "src/"
+        }
+    }
+}
