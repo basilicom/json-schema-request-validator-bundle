@@ -10,6 +10,15 @@ class FilePathProvider
     /** @var string[] */
     private $filePaths;
 
+    /** @var string[] */
+    private $ignoredRouteNames;
+
+    public function __construct()
+    {
+        $this->filePaths         = [];
+        $this->ignoredRouteNames = [];
+    }
+
     /**
      * @param string $routeName
      *
@@ -33,5 +42,23 @@ class FilePathProvider
     public function setJsonSchemaFilePathForRouteName(string $routeName, string $jsonSchemaFilePath)
     {
         $this->filePaths[$routeName] = $jsonSchemaFilePath;
+    }
+
+    public function setIgnoreRouteName(string $routeName, bool $shouldBeIgnored = true)
+    {
+        if (!$shouldBeIgnored && ($index = array_search($routeName, $this->ignoredRouteNames)) !== false) {
+            array_splice($ar, $index, 1);
+            return;
+        }
+
+        if ($shouldBeIgnored && !in_array($routeName, $this->ignoredRouteNames)) {
+            $this->ignoredRouteNames[] = $routeName;
+            return;
+        }
+    }
+
+    public function shouldBeIgnored(string $routeName): bool
+    {
+        return in_array($routeName, $this->ignoredRouteNames);
     }
 }
