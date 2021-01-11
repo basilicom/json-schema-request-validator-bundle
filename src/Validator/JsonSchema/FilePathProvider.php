@@ -52,7 +52,7 @@ class FilePathProvider
         }
 
         if ($shouldBeIgnored && !in_array($routeName, $this->ignoredRouteNames)) {
-            unset($this->ignoredRouteNames[$routeName]);
+            $this->ignoredRouteNames[] = $routeName;
             return;
         }
     }
