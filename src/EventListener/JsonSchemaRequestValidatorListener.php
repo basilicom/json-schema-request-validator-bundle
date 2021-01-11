@@ -36,8 +36,15 @@ class JsonSchemaRequestValidatorListener
             return;
         }
 
+        $jsonSchemaFilePathProvider = new FilePathProvider();
+        $controller->setJsonSchemaFilePathsInFilePathProvider($jsonSchemaFilePathProvider);
+
+        if ($this->routeShouldBeIgnored($event->getRequest(), $jsonSchemaFilePathProvider)) {
+            return;
+        }
+
         try {
-            $jsonSchemaFilePath = $this->getJsonSchemaFilePath($event->getRequest(), $controller);
+            $jsonSchemaFilePath = $this->getJsonSchemaFilePath($event->getRequest(), $jsonSchemaFilePathProvider);
         } catch (FileNotFoundException | NoFilePathProvidedException $exception) {
             $event->setController(function () use ($exception) {
                 return JsonResponse::create(['message' => 'Could not get json schema to validate request body'], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -71,22 +78,31 @@ class JsonSchemaRequestValidatorListener
 
     /**
      * @param Request $request
-     * @param JsonSchemaRequestValidationControllerInterface $controller
+     * @param FilePathProvider $jsonSchemaFilePathProvider
      *
      * @return string
      *
      * @throws FileNotFoundException
      * @throws NoFilePathProvidedException
      */
-    private function getJsonSchemaFilePath(Request $request, JsonSchemaRequestValidationControllerInterface $controller): string
+    private function getJsonSchemaFilePath(Request $request, FilePathProvider $jsonSchemaFilePathProvider): string
     {
-        $jsonSchemaFilePathProvider = new FilePathProvider();
-        $controller->setJsonSchemaFilePathsInFilePathProvider($jsonSchemaFilePathProvider);
-
-
-        $routeName = $request->attributes->get('_route');
+        $routeName = $this->getRouteName($request);
 
         return $jsonSchemaFilePathProvider->getJsonSchemaFilePathForRouteName($routeName);
+    }
+
+    /**
+     * @param Request $request
+     * @param FilePathProvider $jsonSchemaFilePathProvider
+     *
+     * @return bool
+     */
+    private function routeShouldBeIgnored(Request $request, FilePathProvider $jsonSchemaFilePathProvider): bool
+    {
+        $routeName = $this->getRouteName($request);
+
+        return $jsonSchemaFilePathProvider->shouldBeIgnored($routeName);
     }
 
     /**
@@ -94,10 +110,20 @@ class JsonSchemaRequestValidatorListener
      *
      * @return stdClass|null
      */
-    private function getRequestContent(Request $request)
+    private function getRequestContent(Request $request): ?stdClass
     {
         $json = $request->getContent();
 
         return json_decode($json);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return string
+     */
+    private function getRouteName(Request $request): string
+    {
+        return $request->attributes->get('_route');
     }
 }
