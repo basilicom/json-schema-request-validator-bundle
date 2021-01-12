@@ -33,13 +33,26 @@ class TestingEndpointsController extends Controller implements JsonSchemaRequest
      *
      * @return JsonResponse
      */
-    public function testing(Request $request)
+    public function testingPost(Request $request)
+    {
+        return JsonResponse::create(['success']);
+    }
+    
+    /**
+     * @Route("/testing", methods={"GET"}, name="testing_get")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function testingGet(Request $request)
     {
         return JsonResponse::create(['success']);
     }
 
     public function setJsonSchemaFilePathsInFilePathProvider(FilePathProvider $filePathProvider)
     {
+        $filePathProvider->setIgnoreRouteName('testing_get', true);
         $filePathProvider->setJsonSchemaFilePathForRouteName('testing_post', __DIR__ . '/../Resources/jsonschemas/test.json');
     }
 }
