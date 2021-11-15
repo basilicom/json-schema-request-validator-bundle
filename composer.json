@@ -12,7 +12,10 @@
     "minimum-stability": "dev",
     "require": {
         "ext-json": "*",
-        "symfony/symfony": "^5.3",
+        "symfony/http-kernel": "^5.3",
+        "symfony/http-foundation": "^5.3",
+        "symfony/config": "^5.3",
+        "symfony/dependency-injection": "^5.3",
         "justinrainbow/json-schema": "^5.2"
     },
     "autoload":  {

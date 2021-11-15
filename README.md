@@ -8,6 +8,17 @@ Easily validate Symfony request bodies via JSON schema and automatically reject 
 | 1.x | 3.4.x or 4.1.x  |
 | 2.x | 5.3.x  |
 
+## Installation
+
+via composer
+```
+composer require basilicom/json-schema-request-validator-bundle
+```
+
+add to \App\Kernel
+```php
+$collection->addBundle(new JsonSchemaRequestValidatorBundle());
+```
 
 ## Usage
 The controller needs to implement the `JsonSchemaRequestValidationControllerInterface`.
@@ -15,7 +26,7 @@ All request bodies of its actions then will be validated with JSON schema files 
 
 All actions of this controller must have a JSON schema file which must be mapped via the route name.
 
-The system automatically rejects an invalid incoming requests with status code "403 Forbidden".
+The system automatically rejects an invalid incoming requests with status code "400 Bad Request".
 If no JSON schema file can be found it will respond with "500 Internal Server Error".
 
 ## Example Symfony controller
@@ -26,12 +37,12 @@ If no JSON schema file can be found it will respond with "500 Internal Server Er
 namespace AppBundle\Controller;
 
 use Basilicom\JsonSchemaRequestValidator\Controller\JsonSchemaRequestValidationControllerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class TestingEndpointsController extends Controller implements JsonSchemaRequestValidationControllerInterface
+class TestingEndpointsController extends AbstractController implements JsonSchemaRequestValidationControllerInterface
 {
     /**
      * @Route("/testing", methods={"POST"}, name="testing_post")
@@ -40,9 +51,9 @@ class TestingEndpointsController extends Controller implements JsonSchemaRequest
      *
      * @return JsonResponse
      */
-    public function testingPost(Request $request)
+    public function testingPost(Request $request): JsonResponse
     {
-        return JsonResponse::create(['success']);
+        return new JsonResponse(['success']);
     }
     
     /**
@@ -52,9 +63,9 @@ class TestingEndpointsController extends Controller implements JsonSchemaRequest
      *
      * @return JsonResponse
      */
-    public function testingGet(Request $request)
+    public function testingGet(Request $request): JsonResponse
     {
-        return JsonResponse::create(['success']);
+        return new JsonResponse(['success']);
     }
 
     public function setJsonSchemaFilePathsInFilePathProvider(FilePathProvider $filePathProvider)

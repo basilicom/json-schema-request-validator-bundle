@@ -8,4 +8,4 @@ services:
   Basilicom\JsonSchemaRequestValidator\Validator\JsonSchemaValidator: ~
   Basilicom\JsonSchemaRequestValidator\EventListener\JsonSchemaRequestValidatorListener:
     tags:
-      - { name: kernel.event_listener, event: kernel.controller, method: onKernelController}
+      - { name: kernel.event_listener, event: kernel.controller}
