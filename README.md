@@ -2,6 +2,13 @@
 
 Easily validate Symfony request bodies via JSON schema and automatically reject invalid requests
 
+## Version
+| Version  | Symfony  |
+|---|---|
+| 1.x | 3.4.x or 4.1.x  |
+| 2.x | 5.3.x  |
+
+
 ## Usage
 The controller needs to implement the `JsonSchemaRequestValidationControllerInterface`.
 All request bodies of its actions then will be validated with JSON schema files set via the interface method `setJsonSchemaFilePathsInFilePathProvider(FilePathProvider $filePathProvider)`.

@@ -12,7 +12,7 @@
     "minimum-stability": "dev",
     "require": {
         "ext-json": "*",
-        "symfony/symfony": "^3.4.26 || ^4.1.12",
+        "symfony/symfony": "^5.3",
         "justinrainbow/json-schema": "^5.2"
     },
     "autoload":  {

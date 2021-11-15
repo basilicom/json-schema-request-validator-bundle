@@ -12,7 +12,7 @@ use stdClass;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
 
 class JsonSchemaRequestValidatorListener
 {
@@ -24,7 +24,7 @@ class JsonSchemaRequestValidatorListener
         $this->jsonSchemaValidator = $jsonSchemaValidator;
     }
 
-    public function onKernelController(FilterControllerEvent $event)
+    public function onKernelController(ControllerEvent $event)
     {
         $controller = $event->getController();
 
@@ -47,7 +47,10 @@ class JsonSchemaRequestValidatorListener
             $jsonSchemaFilePath = $this->getJsonSchemaFilePath($event->getRequest(), $jsonSchemaFilePathProvider);
         } catch (FileNotFoundException | NoFilePathProvidedException $exception) {
             $event->setController(function () use ($exception) {
-                return JsonResponse::create(['message' => 'Could not get json schema to validate request body'], Response::HTTP_INTERNAL_SERVER_ERROR);
+                return new JsonResponse(
+                    ['message' => 'Could not get json schema to validate request body'],
+                    Response::HTTP_INTERNAL_SERVER_ERROR
+                );
             });
 
             return;
@@ -56,7 +59,10 @@ class JsonSchemaRequestValidatorListener
         $content = $this->getRequestContent($event->getRequest());
         if (empty($content)) {
             $event->setController(function () {
-                return JsonResponse::create(['message' => 'Request did not contain any valid content'], Response::HTTP_FORBIDDEN);
+                return new JsonResponse(
+                    ['message' => 'Request did not contain any valid content'],
+                    Response::HTTP_BAD_REQUEST
+                );
             });
 
             return;
@@ -66,12 +72,18 @@ class JsonSchemaRequestValidatorListener
             if (!$this->jsonSchemaValidator->isValid($content, $jsonSchemaFilePath)) {
                 $errors = $this->jsonSchemaValidator->getErrors($content, $jsonSchemaFilePath);
                 $event->setController(function () use ($errors) {
-                    return JsonResponse::create(['message' => 'Request content validation failed', 'errors' => $errors], Response::HTTP_FORBIDDEN);
+                    return new JsonResponse(
+                        ['message' => 'Request content validation failed', 'errors' => $errors],
+                        Response::HTTP_BAD_REQUEST
+                    );
                 });
             }
         } catch (GeneralJsonSchemaRequestValidatorException $exception) {
             $event->setController(function () use ($exception) {
-                return JsonResponse::create(['message' => $exception->getMessage()], Response::HTTP_FORBIDDEN);
+                return new JsonResponse(
+                    ['message' => $exception->getMessage()],
+                    Response::HTTP_BAD_REQUEST
+                );
             });
         }
     }
