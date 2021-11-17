@@ -120,9 +120,9 @@ class JsonSchemaRequestValidatorListener
     /**
      * @param Request $request
      *
-     * @return stdClass|null
+     * @return stdClass|array|null
      */
-    private function getRequestContent(Request $request): ?stdClass
+    private function getRequestContent(Request $request)
     {
         $json = $request->getContent();
 
