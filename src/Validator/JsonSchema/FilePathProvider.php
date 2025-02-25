@@ -8,10 +8,10 @@ use Basilicom\JsonSchemaRequestValidator\Validator\JsonSchema\Exception\NoFilePa
 class FilePathProvider
 {
     /** @var string[] */
-    private $filePaths;
+    private array $filePaths;
 
     /** @var string[] */
-    private $ignoredRouteNames;
+    private array $ignoredRouteNames;
 
     public function __construct()
     {
@@ -39,21 +39,21 @@ class FilePathProvider
         return $this->filePaths[$routeName];
     }
 
-    public function setJsonSchemaFilePathForRouteName(string $routeName, string $jsonSchemaFilePath)
+    public function setJsonSchemaFilePathForRouteName(string $routeName, string $jsonSchemaFilePath): void
     {
         $this->filePaths[$routeName] = $jsonSchemaFilePath;
     }
 
-    public function setIgnoreRouteName(string $routeName, bool $shouldBeIgnored = true)
+    public function setIgnoreRouteName(string $routeName, bool $shouldBeIgnored = true): void
     {
         if (!$shouldBeIgnored && ($index = array_search($routeName, $this->ignoredRouteNames)) !== false) {
+            // bastodo: fix this missing $ar
             array_splice($ar, $index, 1);
             return;
         }
 
         if ($shouldBeIgnored && !in_array($routeName, $this->ignoredRouteNames)) {
             $this->ignoredRouteNames[] = $routeName;
-            return;
         }
     }
 

@@ -14,17 +14,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 
-class JsonSchemaRequestValidatorListener
+readonly class JsonSchemaRequestValidatorListener
 {
-    /** @var JsonSchemaValidator */
-    private $jsonSchemaValidator;
-
-    public function __construct(JsonSchemaValidator $jsonSchemaValidator)
+    public function __construct(private JsonSchemaValidator $jsonSchemaValidator)
     {
-        $this->jsonSchemaValidator = $jsonSchemaValidator;
     }
 
-    public function onKernelController(ControllerEvent $event)
+    public function onKernelController(ControllerEvent $event): void
     {
         $controller = $event->getController();
 
@@ -122,7 +118,7 @@ class JsonSchemaRequestValidatorListener
      *
      * @return stdClass|array|null
      */
-    private function getRequestContent(Request $request)
+    private function getRequestContent(Request $request): array|stdClass|null
     {
         $json = $request->getContent();
 

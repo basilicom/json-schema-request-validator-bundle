@@ -3,10 +3,11 @@
 Easily validate Symfony request bodies via JSON schema and automatically reject invalid requests
 
 ## Version
-| Version  | Symfony  |
-|---|---|
-| 1.x | 3.4.x or 4.1.x  |
-| 2.x | 5.3.x  |
+| Version | Symfony        |
+|---------|----------------|
+| 1.x     | 3.4.x or 4.1.x |
+| 2.x     | 5.3.x          |
+| 3.x     | 6.4.x or 7.0.x |
 
 ## Installation
 
@@ -15,9 +16,13 @@ via composer
 composer require basilicom/json-schema-request-validator-bundle
 ```
 
-add to \App\Kernel
 ```php
-$collection->addBundle(new JsonSchemaRequestValidatorBundle());
+use Basilicom\JsonSchemaRequestValidator\JsonSchemaRequestValidatorBundle;
+// ...
+return [
+    // ...
+    JsonSchemaRequestValidatorBundle::class => ['all' => true],
+];
 ```
 
 ## Usage
