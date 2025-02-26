@@ -8,16 +8,10 @@ use Basilicom\JsonSchemaRequestValidator\Validator\Exception\ReadingFileExceptio
 use JsonSchema\Validator;
 use stdClass;
 
-class JsonSchemaValidator
+readonly class JsonSchemaValidator
 {
-    /**
-     * @var Validator
-     */
-    private $jsonSchemaValidator;
-
-    public function __construct(Validator $jsonSchemaValidator)
+    public function __construct(private Validator $jsonSchemaValidator)
     {
-        $this->jsonSchemaValidator = $jsonSchemaValidator;
     }
 
     /**
@@ -62,7 +56,7 @@ class JsonSchemaValidator
      * @throws FileNotFoundException
      * @throws ReadingFileException
      */
-    private function validate($jsonObject, string $schemaFilePath)
+    private function validate($jsonObject, string $schemaFilePath): void
     {
         $schemaObject = $this->getJsonSchemaObject($schemaFilePath);
         $this->jsonSchemaValidator->reset();
@@ -78,7 +72,7 @@ class JsonSchemaValidator
      * @throws ReadingFileException
      * @throws DecodingFileException
      */
-    private function getJsonSchemaObject(string $schemaFilePath)
+    private function getJsonSchemaObject(string $schemaFilePath): stdClass
     {
         if (!file_exists($schemaFilePath)) {
             throw new FileNotFoundException('Could not find file ' . $schemaFilePath);
